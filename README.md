@@ -36,7 +36,7 @@ build {
 }
 ```
 
-Note, the plugin automatically restarts the machine after Windows Updates are applied.  The reboots occur similar to the windows-restart provisioner built into packer where packer is aware that a shutdown is in progress.
+Note, the plugin automatically restarts the machine after Windows Updates are applied and repeats until all updates are installed. The reboots occur similar to the windows-restart provisioner built into packer where packer is aware that a shutdown is in progress.
 
 ## Search Criteria, Filters and Update Limit
 
@@ -64,6 +64,8 @@ build {
       "include:$true",
     ]
     update_limit = 25
+    reboot_delay = 900
+    use_extended_validation = true
   }
 }
 ```
@@ -71,6 +73,10 @@ build {
 **NB** For more information about the search criteria see the [IUpdateSearcher::Search method](https://docs.microsoft.com/en-us/windows/desktop/api/wuapi/nf-wuapi-iupdatesearcher-search) documentation and the [xWindowsUpdateAgent DSC resource source](https://github.com/PowerShell/xWindowsUpdate/blob/dev/DscResources/MSFT_xWindowsUpdateAgent/MSFT_xWindowsUpdateAgent.psm1).
 
 **NB** If the `update_limit` attribute is not declared, it defaults to `1000`.
+
+**NB** If the `reboot_delay` attribute is not declared, it defaults to `0`.  reboot_delay is in seconds.  It delays reboots after windows updates have completed.
+
+**NB** If the `use_extended_validation` attribute is not declared, it defaults to 'false'.  use_extended_validation accepts boolean values (true/false).  If set to true, windows update completion is validated by either the exiting of the windows installer process or event logs / CBS logs that validate the completion.  Some Windows updates complete, but do not exit the TiWorker.exe process to validate the completion.  This parameter handles those types of scenarios, ensuring this windows update module finalizes successfully.
 
 The general filter syntax is:
 

@@ -4,6 +4,8 @@ jobs:
   build:
     name: Build
     runs-on: windows-2022
+    permissions:
+      contents: write
     steps:
       - name: Configure git
         run: git config --global core.autocrlf false
